@@ -5,8 +5,10 @@ import java.io.*;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.search.FlagTerm;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 /**
  * This class allows users to obtain mailbox sessions either through IMAP or POP3 protocols, read mail and/or make a copy 
  * @author Weslee Brown - wbrown@stonecobra.com
@@ -15,13 +17,16 @@ import org.json.simple.JSONObject;
 public class Email
 {	
 	private Properties emailConfiguration = new Properties();
+	private static final String propFile = "config.properties";
+	private static final String IMAP = "mail.imap.host";
+	private static final String POP = "mail.pop3.host";
+	private static final String IMAP_USER = "mail.imap.user";
+	private static final String POP_USER = "mail.pop3.user";
+	private static final String STORE = "mail.store.protocol";
+	private static final String IMAP_FOLDER = "mail.imap.folder";
+	static Logger log = Logger.getLogger(Email.class.getName());
 
 	public Email(){
-		init();
-	}
-	
-	private void init(){
-		
 	}
 	
 	/**
@@ -40,12 +45,14 @@ public class Email
 	{
 		try
 		{
-			InputStream inProps =  new FileInputStream("config.properties");
+			InputStream inProps =  new FileInputStream(propFile);
 			emailConfiguration.load(inProps);
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace();
+			log.error(e);
+			log.debug(e);
 		}
 	}
 	
@@ -63,54 +70,54 @@ public class Email
 	 * @return the host information as a String
 	 */
 	public String getIMAPHost()
-	  { return emailConfiguration.getProperty("mail.imap.host"); }
+	  { return emailConfiguration.getProperty(IMAP); }
 	
 	public String getPOP3Host() {
-		return emailConfiguration.getProperty("mail.pop3.host");
+		return emailConfiguration.getProperty(POP);
 	}
 	/**
 	 * This method gets the user set in the config.properties file
 	 * @return the user's email address as a String 
 	 */
 	public String getIMAPUser()
-	  { return emailConfiguration.getProperty("mail.imap.user"); }
+	  { return emailConfiguration.getProperty(IMAP_USER); }
 	
 	public String getPOP3User() {
-		return emailConfiguration.getProperty("mail.pop3.user");
+		return emailConfiguration.getProperty(POP_USER);
 	}
 	/**
 	 * This method gets the protocol set in the config.properties file
 	 * @return the protocol used as a String
 	 */
 	public String getProtocol()
-	  { return emailConfiguration.getProperty("mail.store.protocol"); }
+	  { return emailConfiguration.getProperty(STORE); }
 	
 	/**
 	 * This method is used to set the host name in the config.properties file
 	 * @param host, the desired email host to set in the config.properties file, as a String
 	 */
 	public void setIMAPHost(String host)
-	  { emailConfiguration.setProperty("mail.imap.host", host); }
+	  { emailConfiguration.setProperty(IMAP, host); }
 	
 	public void setPOP3Host(String host) {
-		emailConfiguration.setProperty("mail.pop3.host", host);
+		emailConfiguration.setProperty(POP, host);
 	}
 	/**
 	 * This method is used to set the user's email address in the config.properties file
 	 * @param user, the desired email address to use, as a String
 	 */
 	public void setIMAPUser(String user)
-	  { emailConfiguration.setProperty("mail.imap.user", user); }
+	  { emailConfiguration.setProperty(IMAP_USER, user); }
 	
 	public void setPOP3User(String user) {
-		emailConfiguration.setProperty("mail.pop3.user", user);
+		emailConfiguration.setProperty(POP_USER, user);
 	}
 	/**
 	 * This method is used to set the email protocol to communicate with the server in the config.properties file
 	 * @param protocol, the desired protocol to use, as a String
 	 */
 	public void setProtocol(String protocol)
-	  { emailConfiguration.setProperty("mail.store.protocol", protocol); }
+	  { emailConfiguration.setProperty(STORE, protocol); }
 	
 	public int getMessageCount(Folder folder) throws Exception {
         return folder.getMessageCount();
@@ -165,10 +172,14 @@ public class Email
 			} catch (MessagingException e) 
 			{
 				e.printStackTrace();
+				log.error(e);
+				log.debug(e);
 			}
 		} catch (NoSuchProviderException e) 
 		{
 			e.printStackTrace();
+			log.error(e);
+			log.debug(e);
 		}
 		return store;
 	}
@@ -189,6 +200,8 @@ public class Email
 		} catch (MessagingException e) 
 		{
 			e.printStackTrace();
+			log.error(e);
+			log.debug(e);
 		}
 		if(allFolders != null)
 		{
@@ -210,7 +223,7 @@ public class Email
 					in.next();
 				}
 			}
-			emailConfiguration.put("mail.imap.folder", allFolders[selection]);
+			emailConfiguration.put(IMAP_FOLDER, allFolders[selection]);
 		}
 		return allFolders[selection];
 	}
@@ -225,13 +238,13 @@ public class Email
 	{
 		Folder folder = null;
 		folder = folders[index];
-		emailConfiguration.put("mail.imap.folder", folders[index]);
+		emailConfiguration.put(IMAP_FOLDER, folders[index]);
 		return folder;
 	}
 	
 	public Folder setIMAPFolder(Folder folder)
 	{
-		emailConfiguration.put("mail.imap.folder", folder);
+		emailConfiguration.put(IMAP_FOLDER, folder);
 		return folder;
 	}
 	
@@ -248,6 +261,8 @@ public class Email
 			} catch (MessagingException e) 
 			{
 				e.printStackTrace();
+				log.error(e);
+				log.debug(e);
 			}
 		}
 		return messages;
@@ -291,6 +306,8 @@ public class Email
 					} catch (IOException e) 
 					{
 						e.printStackTrace();
+						log.error(e);
+						log.debug(e);
 					}		
 					array.add(obj);
 				}
@@ -298,6 +315,8 @@ public class Email
 			catch (MessagingException e) 
 			{
 				e.printStackTrace();
+				log.error(e);
+				log.debug(e);
 			}
 		}
 		return array;
@@ -315,6 +334,8 @@ public class Email
 			} catch (MessagingException e) 
 			{
 				e.printStackTrace();
+				log.error(e);
+				log.debug(e);
 			}
 		}
 		return messages;
@@ -347,13 +368,16 @@ public class Email
 					obj.put("body", content);
 				} catch (IOException e) {
 					e.printStackTrace();
+					log.error(e);
+					log.debug(e);
 				}
 				array.add(obj);
 			}
 			return array;
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			log.error(e);
+			log.debug(e);
 		}
 		return array;
 	}

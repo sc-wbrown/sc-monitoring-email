@@ -50,9 +50,7 @@ public class Email
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
 			log.error(e);
-			log.debug(e);
 		}
 	}
 	
@@ -135,7 +133,7 @@ public class Email
 	        folder = folder.getFolder(folderName);
 	         
 	        if (folder == null) {
-	            throw new Exception("Invalid folder");
+	            log.error("Invalid Folder");
 	        }
 	         
 	        // try to open read/write and if that fails try read-only
@@ -171,15 +169,11 @@ public class Email
 				
 			} catch (MessagingException e) 
 			{
-				e.printStackTrace();
 				log.error(e);
-				log.debug(e);
 			}
 		} catch (NoSuchProviderException e) 
 		{
-			e.printStackTrace();
 			log.error(e);
-			log.debug(e);
 		}
 		return store;
 	}
@@ -199,9 +193,7 @@ public class Email
 			allFolders = store.getDefaultFolder().list("*");
 		} catch (MessagingException e) 
 		{
-			e.printStackTrace();
 			log.error(e);
-			log.debug(e);
 		}
 		if(allFolders != null)
 		{
@@ -216,7 +208,6 @@ public class Email
 				if(in.hasNextInt())
 				{
 					selection = in.nextInt();
-					
 				}
 				else
 				{
@@ -260,9 +251,7 @@ public class Email
 				messages = inbox.search(ft);
 			} catch (MessagingException e) 
 			{
-				e.printStackTrace();
 				log.error(e);
-				log.debug(e);
 			}
 		}
 		return messages;
@@ -305,18 +294,14 @@ public class Email
 						obj.put("data", msg.getContent());
 					} catch (IOException e) 
 					{
-						e.printStackTrace();
 						log.error(e);
-						log.debug(e);
 					}		
 					array.add(obj);
 				}
 			} 
 			catch (MessagingException e) 
 			{
-				e.printStackTrace();
 				log.error(e);
-				log.debug(e);
 			}
 		}
 		return array;
@@ -333,9 +318,7 @@ public class Email
 				messages = inbox.getMessages();
 			} catch (MessagingException e) 
 			{
-				e.printStackTrace();
 				log.error(e);
-				log.debug(e);
 			}
 		}
 		return messages;
@@ -367,17 +350,13 @@ public class Email
 					content = message.getContent();
 					obj.put("body", content);
 				} catch (IOException e) {
-					e.printStackTrace();
 					log.error(e);
-					log.debug(e);
 				}
 				array.add(obj);
 			}
 			return array;
 		} catch (MessagingException e) {
-			e.printStackTrace();
 			log.error(e);
-			log.debug(e);
 		}
 		return array;
 	}
